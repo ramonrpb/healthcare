@@ -2,12 +2,11 @@ package br.com.healthcare.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import org.springframework.lang.NonNull;
 
 @Entity
 public class HealthcareInstitution implements Serializable{
@@ -18,20 +17,24 @@ public class HealthcareInstitution implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@NonNull
-	private Long cnpj;
+	@Column(nullable = false, length = 20)
+	private String cnpj;
 	
-	@NonNull
+	@Column(nullable = false, length = 300)
 	private String name;
+	
+	@Column(nullable = false)
+	private int coins;
 	
 	public HealthcareInstitution() {
 	}
 	
-	public HealthcareInstitution(Long id, Long cnpj, String name) {
+	public HealthcareInstitution(Long id, String cnpj, String name, int coins) {
 		super();
 		this.id = id;
 		this.cnpj = cnpj;
 		this.name = name;
+		this.coins = coins;
 	}
 
 	public Long getId() {
@@ -41,10 +44,10 @@ public class HealthcareInstitution implements Serializable{
 		this.id = id;
 	}
 	
-	public Long getCnpj() {
+	public String getCnpj() {
 		return cnpj;
 	}
-	public void setCnpj(Long cnpj) {
+	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
 
@@ -53,6 +56,13 @@ public class HealthcareInstitution implements Serializable{
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getCoins() {
+		return coins;
+	}
+	public void setCoins(int coins) {
+		this.coins = coins;
 	}
 
 	@Override
@@ -85,5 +95,5 @@ public class HealthcareInstitution implements Serializable{
 			return false;
 		return true;
 	}
-	
+
 }

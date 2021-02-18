@@ -2,12 +2,15 @@ package br.com.healthcare.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import org.springframework.lang.NonNull;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Exam implements Serializable{
@@ -18,28 +21,38 @@ public class Exam implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@NonNull
+	@Column(nullable = false, length = 300)
 	private String patientName;
 	
-	@NonNull
+	@Column(nullable = false)
 	private int patientAge;
 	
-	@NonNull
-	private String patientGender;
+	@Enumerated(EnumType.STRING)
+	@Column(length = 20)
+	private Gender patientGender;
 	
-	@NonNull
+	@Column(nullable = false, length = 300)
 	private String physicianName;
-	@NonNull
+	
+	@Column(nullable = false)
 	private Long physicianCrm;
 	
-	@NonNull
+	@Column(nullable = false, length = 300)
 	private String procedureName;
+	
+	@OneToOne
+	@JoinColumn(name = "id_healthcare_Institution", referencedColumnName = "id", nullable = false)
+	private HealthcareInstitution healthcareInstitution;
+	
+	@Column(nullable = false)
+	private
+	boolean read;
 	
 	public Exam() {
 	}
 
-	public Exam(Long id, String patientName, int patientAge, String patientGender, String physicianName,
-			Long physicianCrm, String procedureName) {
+	public Exam(Long id, String patientName, int patientAge, Gender patientGender, String physicianName,
+			Long physicianCrm, String procedureName, boolean read) {
 		super();
 		this.id = id;
 		this.patientName = patientName;
@@ -48,6 +61,7 @@ public class Exam implements Serializable{
 		this.physicianName = physicianName;
 		this.physicianCrm = physicianCrm;
 		this.procedureName = procedureName;
+		this.read = read;
 	}
 
 	public Long getId() {
@@ -71,10 +85,10 @@ public class Exam implements Serializable{
 		this.patientAge = patientAge;
 	}
 
-	public String getPatientGender() {
+	public Gender getPatientGender() {
 		return patientGender;
 	}
-	public void setPatientGender(String patientGender) {
+	public void setPatientGender(Gender patientGender) {
 		this.patientGender = patientGender;
 	}
 
@@ -97,6 +111,13 @@ public class Exam implements Serializable{
 	}
 	public void setProcedureName(String procedureName) {
 		this.procedureName = procedureName;
+	}
+
+	public HealthcareInstitution getHealthcareInstitution() {
+		return healthcareInstitution;
+	}
+	public void setHealthcareInstitution(HealthcareInstitution healthcareInstitution) {
+		this.healthcareInstitution = healthcareInstitution;
 	}
 
 	@Override
@@ -140,6 +161,14 @@ public class Exam implements Serializable{
 		} else if (!procedureName.equals(other.procedureName))
 			return false;
 		return true;
+	}
+
+	public boolean isRead() {
+		return read;
+	}
+
+	public void setRead(boolean read) {
+		this.read = read;
 	}
 	
 }
