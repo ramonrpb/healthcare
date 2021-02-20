@@ -36,7 +36,7 @@ public class HealthcareInstitutionController {
 		return ResponseEntity.ok().body(healthcareInstitution);
 	}
 	
-	@RequestMapping(value="/healthcareInstitutionId/{id}/exam/{examId}}", method=RequestMethod.GET)
+	@RequestMapping(value="/healthcareInstitution/{id}/exam/{examId}", method=RequestMethod.GET)
 	public ResponseEntity<Exam> find(@PathVariable Long id, @PathVariable Long examId) {
 		Exam exam = examService.findHealthcareInstitutionExam(id, examId);
 		return ResponseEntity.ok().body(exam);

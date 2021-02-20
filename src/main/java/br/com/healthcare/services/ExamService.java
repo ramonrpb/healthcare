@@ -1,5 +1,6 @@
 package br.com.healthcare.services;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import br.com.healthcare.domain.Exam;
 import br.com.healthcare.domain.HealthcareInstitution;
+import br.com.healthcare.exceptions.BugdetException;
+import br.com.healthcare.exceptions.ExamException;
 import br.com.healthcare.exceptions.ObjectNotFoundException;
 import br.com.healthcare.repositories.ExamRepository;
 import br.com.healthcare.repositories.HealthcareInstitutionRepository;
@@ -29,19 +32,29 @@ public class ExamService {
 				"Exame não encontrado! Id: " + id + ", Tipo: " + Exam.class.getName()));
 	}
 
+	public Exam findByIdAndHealthcareInstitution(Long id, HealthcareInstitution healthcareInstitution) {
+		Optional<Exam> obj = repository.findByIdAndHealthcareInstitution(id, healthcareInstitution);
+		return obj.orElseThrow(() -> new ObjectNotFoundException(
+				"Exame não encontrado! Id: " + id + " para a intituição: "+ healthcareInstitution.getId() +", Tipo: " + Exam.class.getName()));
+	}
+	
 	public @Valid Exam insert(@Valid Exam exam) {
 		
-		HealthcareInstitution institution = (institutionRepository.findById(exam.getHealthcareInstitution().getId())).get();
-		if(institution.getCoins() > 0) {
-			exam.setRead(false);
-			exam = repository.save(exam);
-			institution.setCoins(institution.getCoins()-1);
-			institutionRepository.save(institution);
-		}else {
-			// TODO - criar exception para informar falta de moedas.
+		try {
+			HealthcareInstitution institution = (institutionRepository.findById(exam.getHealthcareInstitution().getId())).get();
+			if(institution.getCoins() > 0) {
+				exam.setRead(false);
+				exam = repository.save(exam);
+				institution.setCoins(institution.getCoins()-1);
+				institutionRepository.save(institution);
+			}else {
+				throw new BugdetException("Sem saldo suficiente para cadastro de novos exames!");
+			}
+			
+			return exam;
+		} catch (NoSuchElementException e) {
+			throw new ExamException("Para cadastrar um exame é necessário informar uma instituição existente.");
 		}
-		
-		return exam;
 	}
 
 	public @Valid Exam update(@Valid Exam exam) {
@@ -57,13 +70,23 @@ public class ExamService {
 
 	public Exam findHealthcareInstitutionExam(Long healthcareInstitutionId, Long examId) {
 		Exam exam = null;
+		
+		Optional<HealthcareInstitution> obj = ((CrudRepository<HealthcareInstitution, Long>) institutionRepository).findById(healthcareInstitutionId);
+		obj.orElseThrow(() -> new ObjectNotFoundException(
+				"Instituição não encontrada! Id: " + healthcareInstitutionId + ", Tipo: " + HealthcareInstitution.class.getName()));
+		
 		HealthcareInstitution institution = (institutionRepository.findById(healthcareInstitutionId)).get();
+		
 		if(institution.getCoins() > 0) {
-			exam = find(examId);
-			institution.setCoins(institution.getCoins()-1);
+			exam = findByIdAndHealthcareInstitution(examId, institution);
+			if(!exam.isRead()) {
+				institution.setCoins(institution.getCoins()-1);
+			}
+			exam.setRead(true);
+			repository.save(exam);
 			institutionRepository.save(institution);
 		}else {
-			// TODO - criar exception para informar falta de moedas.
+			throw new BugdetException("Sem saldo suficiente para consulta a novos exames!");
 		}
 		return exam;
 	}

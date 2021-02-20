@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Exam implements Serializable{
@@ -21,32 +22,38 @@ public class Exam implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotNull(message = "O campo patientName é obrigatório")
 	@Column(nullable = false, length = 300)
 	private String patientName;
 	
+	@NotNull(message = "O campo patientAge é obrigatório")
 	@Column(nullable = false)
 	private int patientAge;
 	
+	@NotNull(message = "O campo patientGender é obrigatório")
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
 	private Gender patientGender;
 	
+	@NotNull(message = "O campo physicianName é obrigatório")
 	@Column(nullable = false, length = 300)
 	private String physicianName;
 	
+	@NotNull(message = "O campo physicianCrm é obrigatório")
 	@Column(nullable = false)
 	private Long physicianCrm;
 	
+	@NotNull(message = "O campo procedureName é obrigatório")
 	@Column(nullable = false, length = 300)
 	private String procedureName;
 	
+	@NotNull(message = "O campo healthcareInstitution é obrigatório")
 	@OneToOne
 	@JoinColumn(name = "id_healthcare_Institution", referencedColumnName = "id", nullable = false)
 	private HealthcareInstitution healthcareInstitution;
 	
 	@Column(nullable = false)
-	private
-	boolean read;
+	private	boolean read;
 	
 	public Exam() {
 	}
