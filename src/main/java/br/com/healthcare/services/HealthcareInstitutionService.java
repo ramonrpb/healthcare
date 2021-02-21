@@ -25,14 +25,19 @@ public class HealthcareInstitutionService {
 	}
 
 	public @Valid HealthcareInstitution insert(@Valid HealthcareInstitution healthcareInstitution) {
+		
 		healthcareInstitution.setCoins(20);
 		healthcareInstitution = repository.save(healthcareInstitution);
 		return healthcareInstitution;
 	}
 
 	public @Valid HealthcareInstitution update(@Valid HealthcareInstitution healthcareInstitution) {
+		
 		if(repository.existsById(healthcareInstitution.getId())) {
-			healthcareInstitution = repository.save(healthcareInstitution);
+			HealthcareInstitution institution = find(healthcareInstitution.getId());
+			institution.setCnpj(healthcareInstitution.getCnpj());
+			institution.setName(healthcareInstitution.getName());
+			healthcareInstitution = repository.save(institution);
 		}
 		return healthcareInstitution;
 	}

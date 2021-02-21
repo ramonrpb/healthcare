@@ -8,4 +8,6 @@ import br.com.healthcare.domain.HealthcareInstitution;
 @Repository
 public interface HealthcareInstitutionRepository extends JpaRepositoryImplementation<HealthcareInstitution, Long> {
 
+	HealthcareInstitution findByCnpj(String cnpj);
+
 }

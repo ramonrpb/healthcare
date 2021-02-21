@@ -9,6 +9,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
+import br.com.healthcare.validation.HealthcareInstitutionInsert;
+import br.com.healthcare.validation.HealthcareInstitutionUpdate;
+
+@HealthcareInstitutionInsert
+@HealthcareInstitutionUpdate
 @Entity
 public class HealthcareInstitution implements Serializable{
 
@@ -23,6 +30,7 @@ public class HealthcareInstitution implements Serializable{
 	private String cnpj;
 	
 	@NotNull(message = "O campo name é obrigatório")
+	@Length(max = 300, message = "O tamanho deve ser no máximo 300 caracteres")
 	@Column(nullable = false, length = 300)
 	private String name;
 	

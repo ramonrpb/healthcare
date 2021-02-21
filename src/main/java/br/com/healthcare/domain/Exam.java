@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 @Entity
 public class Exam implements Serializable{
 
@@ -23,6 +25,7 @@ public class Exam implements Serializable{
 	private Long id;
 	
 	@NotNull(message = "O campo patientName é obrigatório")
+	@Length(max = 300, message = "O tamanho deve ser no máximo 300 caracteres")
 	@Column(nullable = false, length = 300)
 	private String patientName;
 	
@@ -36,6 +39,7 @@ public class Exam implements Serializable{
 	private Gender patientGender;
 	
 	@NotNull(message = "O campo physicianName é obrigatório")
+	@Length(max = 300, message = "O tamanho deve ser no máximo 300 caracteres")
 	@Column(nullable = false, length = 300)
 	private String physicianName;
 	
@@ -44,6 +48,7 @@ public class Exam implements Serializable{
 	private Long physicianCrm;
 	
 	@NotNull(message = "O campo procedureName é obrigatório")
+	@Length(max = 300, message = "O tamanho deve ser no máximo 300 caracteres")
 	@Column(nullable = false, length = 300)
 	private String procedureName;
 	

@@ -59,6 +59,8 @@ public class ExamService {
 
 	public @Valid Exam update(@Valid Exam exam) {
 		if(repository.existsById(exam.getId())) {
+			Exam examOld = find(exam.getId());
+			exam.setRead(examOld.isRead());
 			exam = repository.save(exam);
 		}
 		return exam;
