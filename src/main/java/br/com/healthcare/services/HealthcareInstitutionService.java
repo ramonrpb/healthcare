@@ -38,6 +38,8 @@ public class HealthcareInstitutionService {
 			institution.setCnpj(healthcareInstitution.getCnpj());
 			institution.setName(healthcareInstitution.getName());
 			healthcareInstitution = repository.save(institution);
+		}else {
+			throw new ObjectNotFoundException("Instituição não encontrada! Id: " + healthcareInstitution.getId() + ", Tipo: " + HealthcareInstitution.class.getName());
 		}
 		return healthcareInstitution;
 	}

@@ -62,12 +62,18 @@ public class ExamService {
 			Exam examOld = find(exam.getId());
 			exam.setRead(examOld.isRead());
 			exam = repository.save(exam);
+		}else {
+			throw new ObjectNotFoundException("Exame não encontrado! Id: " + exam.getId() + " Tipo: " + Exam.class.getName());
 		}
 		return exam;
 	}
 
 	public void delete(Long id) {
-		repository.deleteById(id);		
+		if(repository.existsById(id)) {
+			repository.deleteById(id);
+		}else {
+			throw new ObjectNotFoundException("Exame não encontrado! Id: " + id + " Tipo: " + Exam.class.getName());
+		}
 	}
 
 	public Exam findHealthcareInstitutionExam(Long healthcareInstitutionId, Long examId) {
@@ -78,16 +84,16 @@ public class ExamService {
 				"Instituição não encontrada! Id: " + healthcareInstitutionId + ", Tipo: " + HealthcareInstitution.class.getName()));
 		
 		HealthcareInstitution institution = (institutionRepository.findById(healthcareInstitutionId)).get();
+		exam = findByIdAndHealthcareInstitution(examId, institution);
 		
 		if(institution.getCoins() > 0) {
-			exam = findByIdAndHealthcareInstitution(examId, institution);
 			if(!exam.isRead()) {
 				institution.setCoins(institution.getCoins()-1);
 			}
 			exam.setRead(true);
 			repository.save(exam);
 			institutionRepository.save(institution);
-		}else {
+		}else if(!exam.isRead()){
 			throw new BugdetException("Sem saldo suficiente para consulta a novos exames!");
 		}
 		return exam;
